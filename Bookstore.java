@@ -4,15 +4,29 @@
  * client requests to purchase books. It will also handle
  * the bookstore inventory and restocking.
  */
+import java.sql.*;
 public class Bookstore {
+
+    /*
     public String search(String topic); // returns all entries under topic
     public String lookup(int bookid); // returns entry w/ bookid
     public void buy(int bookid); // updates inventory w/ new book
     public String log(); // returns log of purchase history
     public void restock(); // restocks inventory
     public void update(int bookid, int price); // updates price of book
+    */
+    
     public static void main(String[] args){
+	Connection dbconnection = null;
 	// setup / check database
+	try {
+	    Class.forName("org.sqlite.JDBC");
+	    dbconnection = DriverManager.getConnection(						       "jdbc:sqlite:looks4books.db");
+	}catch (Exception e){
+	    System.err.println(e);
+	    System.exit(0);
+	}
+	System.out.println("nice database");
 	// make a webserver
 	// wait for client requests
 	// parse client requests
