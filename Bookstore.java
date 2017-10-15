@@ -9,9 +9,11 @@ import org.apache.xmlrpc.webserver.WebServer;
 import org.apache.xmlrpc.server.XmlRpcServer;
 import org.apache.xmlrpc.server.PropertyHandlerMapping;
 import org.apache.xmlrpc.XmlRpcException;
+import java.util.Hashtable;
 
 public class Bookstore {
-    static Connection db = null;
+    private static Connection db = null;
+    private static Hashtable<Integer, Integer> purchaseLog = new Hashtable<Integer, Integer>();
     /*
       public String log(); // returns log of purchase history
     */
@@ -88,6 +90,10 @@ public class Bookstore {
 	    db.commit();
 	    stmt.close();
 	    rs.close();
+	    // Update the purchaseLog
+	    purchaseLog.put(query, purchaseLog.get(query) + 1);
+	    System.out.println(purchaseLog);
+	    
 	}catch(Exception e){
 	    System.err.println(e);
 	    System.exit(0);
@@ -107,7 +113,7 @@ public class Bookstore {
     private static void restock(){
 	try{
 	    Statement stmt = db.createStatement();
-	    stmt.executeUpdate(String.format("UPDATE BOOKS SET STOCK=255"));
+	    stmt.executeUpdate(String.format("UPDATE BOOKS SET STOCK=8888"));
 	}catch (Exception e){
 	    System.err.println(e);
 	}
@@ -120,8 +126,22 @@ public class Bookstore {
 		String.format("VALUES (%d, '%s', '%s', %d, %f );", id, title, topic, stock, price);
 	    stmt.executeUpdate(book);
 	    stmt.close();
-	}catch (Exception e){
-	    System.err.println(e);
+
+	    purchaseLog.put(id, 0);
+	}catch (SQLException e){
+	    if(e.getMessage().contains("UNIQUE constraint")){
+		try{
+		    Statement stmt = db.createStatement();
+		    stmt.executeUpdate(String.format("UPDATE BOOKS SET STOCK = %d, PRICE = %f WHERE ID = %d", stock, price, id));
+		    System.out.println(stock);
+
+		    purchaseLog.put(id, 0);
+		}catch(SQLException f){
+		    System.err.println(f);
+		}
+	    }else{
+		System.err.println(e);
+	    }
 	}
     }
     
@@ -133,15 +153,16 @@ public class Bookstore {
 	    db.setAutoCommit(false);
 	    System.out.println("nice database");
 	    propagateBook(53477, "Achieve Less Bugs and More Hugs in CSCI 339",
-			  "distributed systems", 155, 1.00f);
+			  "distributed systems", 1555, 1.00f);
 	    propagateBook(53573, "Distributed Systems for Dummies",
-			  "distributed systems", 255, 2.00f);
-	    propagateBook(12365, "Surviving College", "college life", 355, 3.00f);
+			  "distributed systems", 2555, 2.00f);
+	    propagateBook(12365, "Surviving College", "college life", 3555, 3.00f);
 	    propagateBook(12498, "Cooking for the Impatient Undergraduate",
-			  "college life", 455, 4.00f);
+			  "college life", 4555, 4.00f);
 	    System.out.println("books in stock now!");
 	    update(12498, 5.00f);
 	    restock();
+	    System.out.println(purchaseLog);
 	    
 	}catch (Exception e){
 	    System.err.println(e);
