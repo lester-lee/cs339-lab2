@@ -66,7 +66,7 @@ public class Client{
     
     public static void main(String[] args){
 	try {
-	    String url = "http://"+args[0]+".cs.williams.edu:8888/xmlrpc";
+	    String url = "http://"+args[0]+".cs.williams.edu:"+args[1]+"/xmlrpc";
 	    config = new XmlRpcClientConfigImpl();
 	    config.setServerURL(new URL(url));
 	    server = new XmlRpcClient();

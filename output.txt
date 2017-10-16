@@ -1,0 +1,24 @@
+~~~ Server ~~~
+nice database: looks4books
+books in stock now!
+Server started! Accepting requests now.
+> log
+{53477=0, 53573=0, 12498=0, 12365=0}
+> restock
+Bookstore restocked!
+> update 12498 30.45
+Update successful!
+> log
+{53477=0, 53573=0, 12498=1, 12365=0}
+
+~~~ Client ~~~
+You've walked into looks4books store for books
+> search
+12365 | Surviving College 
+12498 | Cooking for the Impatient Undergraduate 
+
+> lookup 12498
+12498 | Cooking for the Impatient Undergraduate | college life | 8888 | $30.45 
+
+> buy 12498
+You bought 12498: Cooking for the Impatient Undergraduate

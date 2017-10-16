@@ -1,7 +1,7 @@
 # Lester Lee and Brianna Rettig Python client
 import xmlrpclib, sys
 
-name = "http://"+sys.argv[1]+".cs.williams.edu:8888"
+name = "http://"+sys.argv[1]+".cs.williams.edu:" + sys.argv[2]
 server = xmlrpclib.Server(name)
 
 def parseRequest(req):
@@ -19,8 +19,13 @@ def parseRequest(req):
         return "Invalid request!"
 
 print "You've walked into looks4books store for books"
-    
+
 while True:
     request = raw_input("> ")
     print parseRequest(request)
-    
+
+'''
+for i in range(500):
+    server.bookstore.search("college")
+    server.bookstore.buy(53573)
+'''

@@ -66,7 +66,7 @@ public class Bookstore {
 		    String topic = rs.getString("topic");
 		    int stock = rs.getInt("stock");
 		    float price = rs.getFloat("price");
-		    res += String.format("%d | %s | %s | %s | %s \n", id,
+		    res += String.format("%d | %s | %s | %s | $%s \n", id,
 					 title, topic, stock, price);
 		}
 	    }
@@ -108,14 +108,12 @@ public class Bookstore {
 	    rs.close();
 	    // Update the purchaseLog
 	    purchaseLog.put(query, purchaseLog.get(query) + 1);
-	    System.out.println(String.format("Book %d was purchased.", query));
-	    System.out.print("> ");
-			       
+	    			       
 	}catch(Exception e){
 	    System.err.println(e);
 	    System.exit(0);
 	}
-	return "You bought " + title;
+	return String.format("You bought %d: " + title, query);
     }
 
     //update only for the server's use (hidden to clients)
@@ -190,12 +188,11 @@ public class Bookstore {
     }
 
     //connect to web
-    private static void setUpWebserver(){
+    private static void setUpWebserver(Integer port){
 	try {
 	    PropertyHandlerMapping phm = new PropertyHandlerMapping();
 	    XmlRpcServer xmlrs;
-
-	    WebServer server = new WebServer(8888);
+	    WebServer server = new WebServer(port);
 	    xmlrs = server.getXmlRpcServer();
 	    phm.addHandler("bookstore", Bookstore.class);
 	    xmlrs.setHandlerMapping(phm);
@@ -238,7 +235,7 @@ public class Bookstore {
     //set up the database, webserver, and an infinite loop scanner to listen in to client requests
     public static void main(String[] args){
 	setUpDatabase();
-	setUpWebserver();
+	setUpWebserver(Integer.parseInt(args[0]));
 	//scanner to read in client requests
 	Scanner sc = new Scanner(System.in);
 	String request;
